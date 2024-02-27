@@ -1,19 +1,17 @@
-
-
-classfile related
+Classfile related
 
 For  Element: field:java.lang.classfile.ClassFile:JAVA_23_VERSION
 Wrong since version 22 instead of 23
 |
-there was never an @since for this field
+there was never an @since for this field (these integer values) in ClassFile.java
 ---------------------------------------
-For  Element: method:java.lang.classfile.ClassSignature:of:(java.lang.classfile.Signature.ClassTypeSig,java.lang.classfile.Signature.ClassTypeSig[])
+For  Element: method:java.lang.classfile.ClassSignature:of:(java.lang.classfile.Signature.ClassTypeSig,java.lang.classfile.Signature.ClassTypeSig[]) ==== fixed in branch fix-classfile-related-since-tags
 Wrong since version 22 instead of 23
 |
 the method signature changes in jdk 23 to:
 method:java.lang.classfile.ClassSignature:of:(java.lang.classfile.Signature.RefTypeSig,java.lang.classfile.Signature.RefTypeSig[])
 ----------------------------------------------------
-For  Element: method:java.lang.classfile.ClassSignature:of:(java.util.List,java.lang.classfile.Signature.ClassTypeSig,java.lang.classfile.Signature.ClassTypeSig[])
+For  Element: method:java.lang.classfile.ClassSignature:of:(java.util.List,java.lang.classfile.Signature.ClassTypeSig,java.lang.classfile.Signature.ClassTypeSig[]) ==== fixed in branch fix-classfile-related-since-tags
 Wrong since version 22 instead of 23
 |
 the method signature changes in jdk 23 to
@@ -23,36 +21,36 @@ method:java.lang.classfile.ClassSignature:of:(java.util.List,java.lang.classfile
 ----------------------------------------------------
 
 
-charset related - all of these were added in 8183743: Umbrella: add overloads that take a Charset parameter
-https://github.com/openjdk/jdk10/commit/4f080a83af63fe275a273e369657bc1de42e74f9
+Charset related - all of these were added in 8183743: Umbrella: add overloads that take a Charset parameter
+commit link: https://github.com/openjdk/jdk10/commit/4f080a83af63fe275a273e369657bc1de42e74f9
 ----------------------------------------------------
-For  Element: method:java.nio.channels.Channels:newReader:(java.nio.channels.ReadableByteChannel,java.nio.charset.Charset)====ADDED
+For  Element: method:java.nio.channels.Channels:newReader:(java.nio.channels.ReadableByteChannel,java.nio.charset.Charset)==== fixed in branch fix-charset-since-tags
 Wrong since version 9 instead of 10
 |
 this was a new mehtod added to the class in jdk 10 - currently has no @since tag
 
 ----------------------------------------------------
 
-For  Element: method:java.nio.channels.Channels:newWriter:(java.nio.channels.WritableByteChannel,java.nio.charset.Charset)====ADDED
+For  Element: method:java.nio.channels.Channels:newWriter:(java.nio.channels.WritableByteChannel,java.nio.charset.Charset)==== fixed in branch fix-charset-since-tags
 Wrong since version 9 instead of 10
 |
 this was a new mehtod added to the class in jdk 10 - currently has no @since tag
 ----------------------------------------------------
 
-For  Element: method:java.util.Formatter:<init>:(java.lang.String,java.nio.charset.Charset,java.util.Locale)====ADDED
+For  Element: method:java.util.Formatter:<init>:(java.lang.String,java.nio.charset.Charset,java.util.Locale)==== fixed in branch fix-charset-since-tags
 Wrong since version 9 instead of 10
 |
 added in jdk 10
 ----------------------------------------------------
 
-For  Element: method:java.util.Formatter:<init>:(java.io.File,java.nio.charset.Charset,java.util.Locale)====ADDED
+For  Element: method:java.util.Formatter:<init>:(java.io.File,java.nio.charset.Charset,java.util.Locale)==== fixed in branch fix-charset-since-tags
 Wrong since version 9 instead of 10
 |
 same as others
 
 ----------------------------------------------------
 
-For  Element: method:java.util.Formatter:<init>:(java.io.OutputStream,java.nio.charset.Charset,java.util.Locale)====ADDED
+For  Element: method:java.util.Formatter:<init>:(java.io.OutputStream,java.nio.charset.Charset,java.util.Locale)==== fixed in branch fix-charset-since-tags
 Wrong since version 9 instead of 10
 |
 same as others
