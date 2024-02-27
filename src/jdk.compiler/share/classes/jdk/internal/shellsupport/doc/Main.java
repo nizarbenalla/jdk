@@ -156,6 +156,14 @@ public class Main {
 
                 String version = String.valueOf(i);
                 ct.getElements().getAllModuleElements().forEach(me -> processModuleRecord(me, version, ct));
+
+                    var x = classDictionary.entrySet().stream()
+                            .filter(entry ->
+                                    entry.getKey().startsWith("method:java.nio.channels.Channels:newReader:"))
+                            .map(Map.Entry::getKey)
+                            .collect(Collectors.toList());
+                System.out.println(1);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
