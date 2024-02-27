@@ -1,3 +1,7 @@
+verifing the output of since tags
+
+----------------------------------------------------
+----------------------------------------------------
 Classfile related
 
 For  Element: field:java.lang.classfile.ClassFile:JAVA_23_VERSION
@@ -64,6 +68,8 @@ same as others
 
 
 Needs discussion:
+----------------------------------------------------
+
 
 For  Element: method:java.security.interfaces.DSAPrivateKey:getParams:()
 Wrong since version 22 instead of 9
@@ -71,6 +77,7 @@ Wrong since version 22 instead of 9
 I think these all fall under the same case
 
 {
+
 For  Element: method:java.security.interfaces.RSAPublicKey:getParams:()
 Wrong since version 22 instead of 11
 For  Element: method:java.security.interfaces.XECPrivateKey:getParams:()
@@ -89,9 +96,12 @@ For  Element: method:java.security.interfaces.ECPrivateKey:getParams:()
 Wrong since version 22 instead of 9
 For  Element: method:java.security.interfaces.EdECPrivateKey:getParams:()
 Wrong since version 22 instead of 15
+For  Element: method:javax.crypto.interfaces.DHPrivateKey:getParams:()
+Wrong since version 22 instead of 9
+For  Element: method:javax.crypto.interfaces.DHPublicKey:getParams:()
+Wrong since version 22 instead of 9
 
 }
-
 
 For  Element: method:java.util.concurrent.ThreadLocalRandom:nextFloat:(float)
 Wrong since version 9 instead of 17
@@ -102,21 +112,61 @@ Wrong since version 14 instead of 9
 ----------------------------------------------------
 ----------------------------------------------------
 
-The rest :
+
+
+
+Rest - mostly isolated cases:
+
+----------------------------------------------------
+
 
 For  Element: method:java.lang.invoke.MethodHandles:tableSwitch:(java.lang.invoke.MethodHandle,java.lang.invoke.MethodHandle[])
 Wrong since version 9 instead of 17
+|
+no tag in the method doc (it does have a doc) - and it was indeed added in jdk 17
+
+--------------------------------------------------------------------------------------------------------
+
 For  Element: method:java.lang.reflect.MalformedParameterizedTypeException:<init>:(java.lang.String)
 Wrong since version 9 instead of 10
+|
+was added in JDK-8183175 Add explicit constructors to MalformedParameterizedTypeException
+commit link https://github.com/nizarbenalla/jdk/commit/6e40f2e939271c21009a5efd43bdfd5633db3582
+
+--------------------------------------------------------------------------------------------------------
+
 For  Element: method:java.nio.MappedByteBuffer:slice:(int,int)
 Wrong since version 9 instead of 13
+|
+this ones requires an other check it was explicitly added to the MappedByteBuffer in jdk 17 and it overrides an other method
+the  public abstract Buffer slice(int index, int length) in Buffer class is annnotated @13
+--------------------------------------------------------------------------------------------------------
+
 For  Element: method:java.util.Properties:<init>:(int)
 Wrong since version 9 instead of 10
+|
+the constructor java doc here is missing an @since tag
+
+---------------------------------------------------------------------------------------------------------
+
 For  Element: method:java.util.concurrent.locks.AbstractQueuedLongSynchronizer:<init>:()
 Wrong since version 9 instead of 14
+|
+this was added without a since tag in in 8250240: Address use of default constructors in the java.util.concurrent
+
+https://github.com/nizarbenalla/jdk/commit/0ef80293f97d222c5316980cd27da814cfc2704e
+```
+ /**
+     * Constructor for subclasses to call.
+     */
+    public AbstractQueuedLongSynchronizer() {}
+```
+
+
+--------------------------------------------------------------------------------------------------------
+
 For  Element: method:java.util.zip.Deflater:setDictionary:(java.nio.ByteBuffer)
 Wrong since version 9 instead of 11
-For  Element: method:javax.crypto.interfaces.DHPrivateKey:getParams:()
-Wrong since version 22 instead of 9
-For  Element: method:javax.crypto.interfaces.DHPublicKey:getParams:()
-Wrong since version 22 instead of 9
+|
+method was indeed added in jdk 11 [6341887: java.util.zip: Add ByteBuffer methods to Inflater/Deflater] but doesn't have a since tag
+--------------------------------------------------------------------------------------------------------
