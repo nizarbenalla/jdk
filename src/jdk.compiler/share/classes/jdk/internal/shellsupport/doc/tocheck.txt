@@ -135,7 +135,7 @@ commit link https://github.com/nizarbenalla/jdk/commit/6e40f2e939271c21009a5efd4
 
 --------------------------------------------------------------------------------------------------------
 
-For  Element: method:java.nio.MappedByteBuffer:slice:(int,int)
+For  Element: method:java.nio.MappedByteBuffer:slice:(int,int) - mentioned
 Wrong since version 9 instead of 13
 |
 this one existed since jdk 13 in Buffer.java
@@ -164,11 +164,11 @@ https://github.com/nizarbenalla/jdk/commit/0ef80293f97d222c5316980cd27da814cfc27
      */
     public AbstractQueuedLongSynchronizer() {}
 ```
-
+.. Note: why is this reported and not the constructor for ForkJoinTask? ot the other constructors added in the same commit?
 
 --------------------------------------------------------------------------------------------------------
 
-For  Element: method:java.util.zip.Deflater:setDictionary:(java.nio.ByteBuffer)
+For  Element: method:java.util.zip.Deflater:setDictionary:(java.nio.ByteBuffer)-added in draft
 Wrong since version 9 instead of 11
 |
 method was indeed added in jdk 11 [6341887: java.util.zip: Add ByteBuffer methods to Inflater/Deflater] but doesn't have a since tag
