@@ -1069,22 +1069,11 @@ var getJibProfilesProfiles = function (input, common, data) {
             runTestPrebuiltSrcFullExtra);
     }
 
-    // Generate the missing platform attributes
-    profiles = generatePlatformAttributes(profiles);
-    profiles = generateDefaultMakeTargetsConfigureArg(common, profiles);
-
-    var testedProfileTest = testImageProfile + ".test";
-    var testOnlyMake = ["test-prebuilt", "LOG_CMDLINES=true", "JTREG_VERBOSE=fail,error,time"];
-
-    if (testedProfile.endsWith("-gcov")) {
-        testOnlyMake = concat(testOnlyMake, "GCOV_ENABLED=true");
-    }
     var testOnlyProfilesPrebuiltDocs = {
         "run-test-prebuilt-docs": {
-            src: [ "src.conf"],
             target_os: input.build_os,
             target_cpu: input.build_cpu,
-            build_platform: "linux-x64-build",
+            src: "src.conf",
             dependencies: [
                 "jtreg", "gnumake", "boot_jdk", "devkit", "jib",
                 "jcov", testedProfileJdk, testedProfileTest, "docs.doc_api_spec",
@@ -1112,19 +1101,14 @@ var getJibProfilesProfiles = function (input, common, data) {
     }
 
     if (profiles[testedProfile] != null) {
-        testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_os"]
-            = profiles[testedProfile]["target_os"];
-        testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_cpu"]
-            = profiles[testedProfile]["target_cpu"];
+        testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_os"] = profiles[testedProfile]["target_os"];
+        testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_cpu"] = profiles[testedProfile]["target_cpu"];
     } else if (profiles[testImageProfile] != null) {
-        testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_os"]
-            = profiles[testImageProfile]["target_os"];
-        testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_cpu"]
-            = profiles[testImageProfile]["target_cpu"];
+        testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_os"] = profiles[testImageProfile]["target_os"];
+        testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_cpu"] = profiles[testImageProfile]["target_cpu"];
     }
 
     profiles = concatObjects(profiles, testOnlyProfilesPrebuiltDocs);
-
 
     if (!new java.io.File(__DIR__, "../../README.md").exists()) {
         profiles["run-test-prebuilt-docs"] = concatObjects(profiles["run-test-prebuilt-docs"],
