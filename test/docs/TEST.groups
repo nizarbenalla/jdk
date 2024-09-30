@@ -22,9 +22,8 @@
 
 # Doccheck-specific test groups
 
+docs_all = \
+    /
 
 tier2 = \
     :docs_all
-
-docs_all = \
-    /
