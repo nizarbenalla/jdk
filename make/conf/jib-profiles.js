@@ -1083,20 +1083,20 @@ var getJibProfilesProfiles = function (input, common, data) {
             error("testedProfile is not defined: " + testedProfile + " " + testImageProfile);
         }
     }
-
-    if (profiles[testedProfile] != null) {
-        testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_os"]
-            = profiles[testedProfile]["target_os"];
-        testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_cpu"]
-            = profiles[testedProfile]["target_cpu"];
-    } else if (profiles[testImageProfile] != null) {
-        testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_os"]
-            = profiles[testImageProfile]["target_os"];
-        testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_cpu"]
-            = profiles[testImageProfile]["target_cpu"];
-    }
-
-    profiles = concatObjects(profiles, testOnlyProfilesPrebuiltDocs);
+    //
+    // if (profiles[testedProfile] != null) {
+    //     testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_os"]
+    //         = profiles[testedProfile]["target_os"];
+    //     testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_cpu"]
+    //         = profiles[testedProfile]["target_cpu"];
+    // } else if (profiles[testImageProfile] != null) {
+    //     testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_os"]
+    //         = profiles[testImageProfile]["target_os"];
+    //     testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["target_cpu"]
+    //         = profiles[testImageProfile]["target_cpu"];
+    // }
+    //
+    // profiles = concatObjects(profiles, testOnlyProfilesPrebuiltDocs);
 
 
     if (!new java.io.File(__DIR__, "../../README.md").exists()) {
