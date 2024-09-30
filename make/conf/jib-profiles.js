@@ -1079,7 +1079,6 @@ var getJibProfilesProfiles = function (input, common, data) {
     if (testedProfile.endsWith("-gcov")) {
         testOnlyMake = concat(testOnlyMake, "GCOV_ENABLED=true");
     }
-    var testedProfileJdk = testedProfile + ".jdk";
     var testOnlyProfilesPrebuiltDocs = {
         "run-test-prebuilt-docs": {
             src: [ "src.conf"],
@@ -1128,10 +1127,6 @@ var getJibProfilesProfiles = function (input, common, data) {
 
 
     if (!new java.io.File(__DIR__, "../../README.md").exists()) {
-        var runTestPrebuiltSrcFullExtra = {
-            dependencies: "src.full",
-            work_dir: input.get("src.full", "install_path"),
-        }
         profiles["run-test-prebuilt-docs"] = concatObjects(profiles["run-test-prebuilt-docs"],
             runTestPrebuiltSrcFullExtra);
     }
