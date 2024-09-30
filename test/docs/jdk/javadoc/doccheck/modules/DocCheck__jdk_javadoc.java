@@ -1,4 +1,4 @@
-/*
+package doccheck.modules;/*
  * Copyright (c) 2024, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
@@ -25,11 +25,12 @@
  * @test
  * @bug 8337109
  * @summary Running Doccheck on generated HTML
- * @library /tools/lib /test/langtools/jdk/javadoc/doccheck/
- * @run main/othervm -Ddoccheck.dir=api/java.base -Ddoccheck.runParallel=true DocCheck
+ * @library /test/langtools/tools/lib /test/docs/jdk/javadoc/doccheck/ /test/lib
+ * @build jtreg.SkippedException
+ * @run main/othervm -Ddoccheck.dir= -Ddoccheck.runParallel=true DocCheck
  */
 
 public class DocCheck__jdk_javadoc {
-    public void main() {
-    }
+    void main(){}
+
 }

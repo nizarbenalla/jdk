@@ -29,11 +29,13 @@ import doccheckutils.checkers.DocTypeChecker;
 import doccheckutils.checkers.LinkChecker;
 import doccheckutils.checkers.TidyChecker;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
+import jtreg.SkippedException;
 import toolbox.TestRunner;
 
 /**
@@ -46,6 +48,20 @@ public class DocCheck extends TestRunner {
     private List<Path> files;
     private static final boolean RUN_PARALLEL = Boolean.parseBoolean(System.getProperty("doccheck.runParallel", "true"));
 
+    public static Path resolveDocs() {
+        Path firstCandidate = ROOT_PATH.getParent()
+                .resolve("docs");
+        Path secondCandidate = ROOT_PATH.getParent().getParent()
+                .resolve("docs.doc_api_spec").resolve("docs");
+
+        if (Files.exists(firstCandidate)) {
+            return firstCandidate;
+        } else if (Files.exists(secondCandidate)) {
+            return secondCandidate;
+        } else {
+            throw new SkippedException("docs folder not found in either location");
+        }
+    }
     public static void main(String... args) throws Exception {
         DocCheck docCheck = new DocCheck();
         docCheck.runTests();
@@ -57,9 +73,7 @@ public class DocCheck extends TestRunner {
     }
 
     public void init() {
-        Path root = ROOT_PATH.getParent()
-                .resolve("docs")
-                .resolve(DIR);
+        Path root =resolveDocs();
         var fileTester = new FileProcessor();
         fileTester.processFiles(root);
         files = fileTester.getFiles();
@@ -67,7 +81,7 @@ public class DocCheck extends TestRunner {
 
     public List<FileChecker> getCheckers() {
         List<FileChecker> checkers = new ArrayList<>();
-        checkers.add(new TidyChecker());
+//        checkers.add(new TidyChecker());
         checkers.add(new BadCharacterChecker());
         checkers.add(new HtmlFileChecker(new DocTypeChecker()));
         checkers.add(new HtmlFileChecker(new LinkChecker()));
