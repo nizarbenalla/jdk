@@ -42,6 +42,9 @@ import toolbox.TestRunner;
  * Takes a directory path under the generated documentation directory as input
  * and runs different {@link FileChecker file checkers} on it.
  */
+
+//todo %22 shouldn't cause false warnings for links
+
 public class DocCheck extends TestRunner {
     private static final Path ROOT_PATH = Path.of(System.getProperty("test.jdk"));
     private static final Path DIR = Path.of(System.getProperty("doccheck.dir"));
