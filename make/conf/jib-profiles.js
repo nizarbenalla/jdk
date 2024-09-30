@@ -1073,38 +1073,10 @@ var getJibProfilesProfiles = function (input, common, data) {
     profiles = generatePlatformAttributes(profiles);
     profiles = generateDefaultMakeTargetsConfigureArg(common, profiles);
 
-    var testedProfileTest = testImageProfile + ".test";
-    var testOnlyMake = ["test-prebuilt", "LOG_CMDLINES=true", "JTREG_VERBOSE=fail,error,time"];
-
-    if (testedProfile.endsWith("-gcov")) {
-        testOnlyMake = concat(testOnlyMake, "GCOV_ENABLED=true");
-    }
-    var testedProfileJdk = testedProfile + ".jdk";
-    var testOnlyProfilesPrebuiltDocs = {
-        "run-test-prebuilt-docs": {
-            src: [ "src.conf"],
-            target_os: input.build_os,
-            target_cpu: input.build_cpu,
-            build_platform: "linux-x64-build",
-            dependencies: [
-                "jtreg", "gnumake", "boot_jdk", "devkit", "jib",
-                "jcov", testedProfileJdk, testedProfileTest, "docs.doc_api_spec",
-            ],
-            make_args: testOnlyMake,
-            environment: {
-                "BOOT_JDK": common.boot_jdk_home,
-                "JT_HOME": input.get("jtreg", "home_path"),
-                "JDK_IMAGE_DIR": input.get(testedProfileJdk, "home_path"),
-                "TEST_IMAGE_DIR": input.get(testedProfileTest, "home_path"),
-                "SYMBOLS_IMAGE_DIR": input.get(testedProfile + ".jdk_symbols", "home_path"),
-            },
-            labels: "test-docs",
-        }
-    };
-
-    if (!testedProfile.endsWith("-jcov")) {
-        testOnlyProfilesPrebuiltDocs["run-test-prebuilt-docs"]["dependencies"].push(testedProfile + ".jdk_symbols");
-    }
+    profiles["run-test-prebuilt-docs"] = clone(profiles["run-test-prebuilt"]);
+    // profiles["run-test-prebuilt-docs"].build_platform = "linux-x64-build";
+    profiles["run-test-prebuilt-docs"].dependencies.push("docs.doc_api_spec");
+    profiles["run-test-prebuilt-docs"].labels = "test-docs";
 
     if (input.profile == "run-test-prebuilt-docs") {
         if (profiles[testedProfile] == null && profiles[testImageProfile] == null) {
@@ -1128,10 +1100,6 @@ var getJibProfilesProfiles = function (input, common, data) {
 
 
     if (!new java.io.File(__DIR__, "../../README.md").exists()) {
-        var runTestPrebuiltSrcFullExtra = {
-            dependencies: "src.full",
-            work_dir: input.get("src.full", "install_path"),
-        }
         profiles["run-test-prebuilt-docs"] = concatObjects(profiles["run-test-prebuilt-docs"],
             runTestPrebuiltSrcFullExtra);
     }
