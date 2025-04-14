@@ -22,7 +22,6 @@
 # or visit www.oracle.com if you need additional information or have any
 # questions.
 #
-
 name: 'Run tests'
 
 on:
@@ -70,6 +69,7 @@ jobs:
           - 'hs/tier1 runtime'
           - 'hs/tier1 serviceability'
           - 'lib-test/tier1'
+          - 'docs'
 
         include:
           - test-name: 'jdk/tier1 part 1'
@@ -116,6 +116,10 @@ jobs:
             test-suite: 'test/lib-test/:tier1'
             debug-suffix: -debug
 
+          - platform: linux-x64
+            test-name: 'docs'
+            test-suite: 'test/docs/:tier2'
+
     steps:
       - name: 'Checkout the JDK source'
         uses: actions/checkout@v4
@@ -141,6 +145,39 @@ jobs:
           platform: ${{ inputs.platform }}
           debug-suffix: ${{ matrix.debug-suffix }}
 
+      - name: Upload JDK bundle
+        if: steps.upload-bundles.outputs.bundles-found == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: jdk-bundle
+          path: bundles/jdk-linux-x64-debug.tar.gz
+
+      - name: Download doc bundle
+        if: matrix.test-name == 'docs'
+        uses: actions/download-artifact@v4
+        with:
+          name: docs-bundle
+          path: docs_bundle
+
+      - name: Extract doc bundle
+        if: matrix.test-name == 'docs'
+        run: |
+          DOCS_ZIP=$(find docs_bundle -name 'jdk-*-internal_doc-all.zip' | head -n 1)
+          if [ -z "$DOCS_ZIP" ]; then
+            echo "Could not find doc zip bundle"
+            exit 1
+          fi
+
+          # Create expected destination (adjust platform if needed)
+          mkdir -p build/linux-x64/images/docs
+      
+          # Unzip into the expected directory
+          unzip -q "$DOCS_ZIP" -d build/linux-x64/images/docs
+      
+          # Set environment variable for the test
+          echo "DOCS_JDK_IMAGE_DIR=$(pwd)/build/linux-x64/images/docs" >> $GITHUB_ENV
+        
+
       - name: 'Install dependencies'
         run: |
           # On macOS we need to install some dependencies for testing
@@ -150,29 +187,31 @@ jobs:
           echo '/usr/local/opt/make/libexec/gnubin' >> $GITHUB_PATH
         if: runner.os == 'macOS'
 
-      - name: 'Set PATH'
-        id: path
+      - name: Run tests
         run: |
-          # We need a minimal PATH on Windows
-          # Set PATH to "", so just GITHUB_PATH is included
-          if [[ '${{ runner.os }}' == 'Windows' ]]; then
-            echo "value=" >> $GITHUB_OUTPUT
+          if [[ "${{ matrix.test-name }}" == "docs" ]]; then
+            export DOCS_IMAGE_DIR="$GITHUB_WORKSPACE/build/linux-x64/images/docs"
+            echo "DOCS_IMAGE_DIR=$DOCS_IMAGE_DIR"
+            ls -R "$DOCS_IMAGE_DIR"  # Debugging
+            make test-prebuilt-docs \
+              TEST='${{ inputs.test-suite }}' \
+              BOOT_JDK=$BOOT_JDK \
+              JT_HOME=$JT_HOME \
+              DOCS_IMAGE_DIR=$DOCS_IMAGE_DIR \
+              JTREG='JAVA_OPTIONS=-XX:-CreateCoredumpOnCrash;VERBOSE=fail,error,time;KEYWORDS=!headful'
           else
-            echo "value=$PATH" >> $GITHUB_OUTPUT
+            make test-prebuilt \
+              TEST='${{ matrix.test-suite }}' \
+              BOOT_JDK=${{ steps.bootjdk.outputs.path }} \
+              JT_HOME=${{ steps.jtreg.outputs.path }} \
+              JDK_IMAGE_DIR=${{ steps.bundles.outputs.jdk-path }} \
+              SYMBOLS_IMAGE_DIR=${{ steps.bundles.outputs.symbols-path }} \
+              TEST_IMAGE_DIR=${{ steps.bundles.outputs.tests-path }} \
+              JTREG='JAVA_OPTIONS=-XX:-CreateCoredumpOnCrash;VERBOSE=fail,error,time;KEYWORDS=!headful'
           fi
 
-      - name: 'Run tests'
-        id: run-tests
-        run: >
-          make test-prebuilt
-          TEST='${{ matrix.test-suite }}'
-          BOOT_JDK=${{ steps.bootjdk.outputs.path }}
-          JT_HOME=${{ steps.jtreg.outputs.path }}
-          JDK_IMAGE_DIR=${{ steps.bundles.outputs.jdk-path }}
-          SYMBOLS_IMAGE_DIR=${{ steps.bundles.outputs.symbols-path }}
-          TEST_IMAGE_DIR=${{ steps.bundles.outputs.tests-path }}
-          JTREG='JAVA_OPTIONS=-XX:-CreateCoredumpOnCrash;VERBOSE=fail,error,time;KEYWORDS=!headful'
-          && bash ./.github/scripts/gen-test-summary.sh "$GITHUB_STEP_SUMMARY" "$GITHUB_OUTPUT"
+          bash ./.github/scripts/gen-test-summary.sh "$GITHUB_STEP_SUMMARY" "$GITHUB_OUTPUT"
+
         env:
           PATH: ${{ steps.path.outputs.value }}
 
